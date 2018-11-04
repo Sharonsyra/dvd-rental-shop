@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block body %}
+<div>
+  <h1>Here is some interesting information about our shop</h1>
+</div>
+<div class="container">
+	<div class="row">
+    <div class="col s12 m10">
+      <div class="card teal">
+        <div class="card-content white-text">
+          <h6 class="card-title">Number of Films involving a Croc and a Shark:</h6>
+          <h1>{{results[0][0][0]}}</h1>
+        </div>
+      </div>
+    </div>
+  	</div>
+    <table>
+        <thead>
+          <h4>Names of actors and customers who match first_name of actor with id 8</h4>
+          <tr>
+              <th>First Name</th>
+              <th>Last Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for names in results[1] %}
+          <tr>
+            <td>{{names[0]}}</td>
+            <td>{{names[1]}}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <table>
+        <thead>
+          <h4>Film categories with films between 55 & 65</h4>
+          <tr>
+              <th>Category</th>
+              <th>Number</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for film_category in results[2] %}
+          <tr>
+            <td>{{film_category[0]}}</td>
+            <td>{{film_category[1]}}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+</div>
+{% endblock %}
+

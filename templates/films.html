@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}About{% endblock %}
+{% block body %}
+<div class="jumbotron">
+  <h1>DVD RENTAL</h1>
+  <p class="lead">Get to know more about us</p>
+</div>
+<div class="row">
+      <form action="{{ url_for('add_film') }}" method="post" class="col s12">
+          <div class="input-field col s6">
+            <input placeholder="Film Title" name="film_title" type="text" class="validate" required>
+            <label for="film_title">Film Title</label>
+          </div>
+          <div class="input-field col s6">
+            <textarea id="description" name="description" class="materialize-textarea"></textarea>
+            <label for="description">Description</label>
+          </div>
+          <div class="input-field col s6">
+            <label for="release_year">Release Year</label>
+            <input type="number" name="release_year" value="2000" placeholder="YYYY" min="1850">
+          </div>
+          <div class="input-field col s6">
+            <select name="film_language" required>
+              <option value="" disabled selected>Select Language</option>
+              <option value="English">English</option>
+              <option value="Italian">Italian</option>
+              <option value="Japanese">Japanese</option>
+              <option value="Mandarin">Mandarin</option>
+              <option value="French">French</option>
+              <option value="German">German</option>
+            </select>
+            <label>Language</label>
+          </div>
+          <div class="input-field col s6">
+            <input placeholder="Rental Duration" name="rental_duration" type="number" min="1" value="5" class="validate" required>
+            <label for="rental_duration">Rental Duration</label>
+          </div>
+          <div class="input-field col s6">
+            <input placeholder="Rental rate" name="rental_rate" type="number" min="0.5" value="4.5" step="any" class="validate" required>
+            <label for="rental_rate">Rental rate</label>
+          </div>
+          <div class="input-field col s6">
+            <input placeholder="Film Length" name="film_length" type="number" min="1" value="30" class="validate">
+            <label for="film_length">Film Length</label>
+          </div>
+          <div class="input-field col s6">
+            <input placeholder="Replacement Cost" name="replacement_cost" type="number" min="0.5" value="4.5" step="any" class="validate" required>
+            <label for="replacement_cost">Replacement Cost</label>
+          </div>
+          <div class="input-field col s6">
+            <select name="film_rating">
+              <option value="" disabled selected>Select Film Rating</option>
+              <option value="PG">PG</option>
+              <option value="R">R</option>
+              <option value="PG-13">PG-13</option>
+              <option value="G" selected="selected">G</option>
+              <option value="NC-17">NC-17</option>
+            </select>
+            <label>Film Rating</label>
+          </div>
+          <input type="hidden" name="csrf" value="{{ generate_csrf_token }}" />
+          <button class="btn waves-effect waves-light" type="submit" name="action">Create Film</button>
+      </form>
+  </div>
+    
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript">
+
+      $(document).ready(function(){
+
+        // yearpicker
+        $('.yearpicker').datepicker({
+          format: "yyyy",
+          weekStart: 1,
+          orientation: "bottom",
+          keyboardNavigation: false,
+          viewMode: "years",
+          minViewMode: "years"
+        }); 
+
+        // TextArea
+        $('#description').val('');
+          M.textareaAutoResize($('#description')); 
+
+        // Drop Down
+        $('select').formSelect();
+
+      });
+
+    </script>
+{% endblock %}
