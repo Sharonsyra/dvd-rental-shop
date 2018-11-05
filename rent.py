@@ -18,8 +18,8 @@ cur = con.cursor()
 def index():
     if request.method == 'GET':
         results = []
-        cur.execute("SELECT count(film_id)\
-        FROM public.film WHERE description iLIKE '%croc%' AND description iLIKE '%shark%'; ")
+        cur.execute("""SELECT count(film_id)
+        FROM public.film WHERE description iLIKE '%croc%' AND description iLIKE '%shark%'; """)
         croc_shark = cur.fetchall()
         results.append(croc_shark)
         cur.execute("""select custor.first_name, custor.last_name
