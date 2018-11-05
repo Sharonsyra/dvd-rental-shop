@@ -11,13 +11,8 @@ database = os.getenv('DATABASE_NAME')
 user = os.getenv('USER_ROLE')
 password = os.getenv('PASSWORD')
 
-try:
-    con = psycopg2.connect(host=host, database=database, user=user, password=password)
-except Exception as e:
-    app.logger.warning("Unable to connect to the database")
-else:
-    cur = con.cursor()
-    app.logger.info("Connected!!")
+con = psycopg2.connect(host=host, database=database, user=user, password=password)
+cur = con.cursor()
 
 @app.route('/')
 def index():
@@ -48,7 +43,6 @@ def index():
         film_categories = cur.fetchall()
         results.append(film_categories)
         con.commit()
-        app.logger.warning("{} results found".format(len(results)))
         return render_template('index.html', results=results)
 
 @app.route('/add_film', methods = ['GET', 'POST'])
