@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, request, abort, redirect, url_for
+from flask import Flask, render_template, session, request, abort, redirect, url_for, flash
 
 import psycopg2
 import random
@@ -72,7 +72,7 @@ def add_film():
         (film_title, film_description, release_year, film_language[0] ,rental_duration ,rental_rate ,film_length ,replacement_cost ,film_rating[0]))
         
         con.commit()
-
+        flash("Film Created!")
         return redirect(url_for('add_film'))
 
 
@@ -81,7 +81,6 @@ def csrf_protect():
     if request.method == "POST":
         token = session.pop('_csrf_token', None)
         if not token or token != request.form.get('_csrf_token'):
-            print(request.form.get('_csrf_token'))
             return render_template('error.html', error = 'CSRF ERROR')
 
 def generate_csrf_token():
@@ -92,4 +91,4 @@ def generate_csrf_token():
 app.jinja_env.globals['csrf_token'] = generate_csrf_token 
 
 if __name__ == '__main__':
-    app.run(debug = True)
+    app.run()
