@@ -85,7 +85,7 @@ def csrf_protect():
 
 def generate_csrf_token():
     if '_csrf_token' not in session:
-        session['_csrf_token'] = "ehjfcbbnweicfbhweuvfgewjnkfjewibcfegwdfhu"
+        session['_csrf_token'] = random.random()
     return session['_csrf_token']
 
 app.jinja_env.globals['csrf_token'] = generate_csrf_token 
