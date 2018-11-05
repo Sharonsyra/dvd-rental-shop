@@ -58,7 +58,7 @@
             </select>
             <label>Film Rating</label>
           </div>
-          <input type="hidden" name="csrf" value="{{ generate_csrf_token }}" />
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}" />
           <button class="btn waves-effect waves-light" type="submit" name="action">Create Film</button>
       </form>
   </div>

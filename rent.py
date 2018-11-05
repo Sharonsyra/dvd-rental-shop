@@ -1,15 +1,17 @@
-from flask import Flask, render_template, request, session, abort, redirect, url_for
+from flask import Flask, render_template, session, request, abort, redirect, url_for
 
 import psycopg2
 import random
 import os
+import requests
+
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET')
-host = "ec2-184-73-222-192.compute-1.amazonaws.com"
-database = "ddjmafhk5bn8vk"
-user = "jqzrlrezawzznt"
-password = "8c962a17e5dfe5f4712e28405265a0fa5c2ff9d2997a86eb44a8b5084b25c103"
+host = os.getenv('SERVER_HOST')
+database = os.getenv('DATABASE_NAME')
+user = os.getenv('USER_ROLE')
+password = os.getenv('PASSWORD')
 
 con = psycopg2.connect(host=host, database=database, user=user, password=password)
 cur = con.cursor()
@@ -76,19 +78,23 @@ def add_film():
 
         return redirect(url_for('add_film'))
 
+
 @app.before_request
 def csrf_protect():
     if request.method == "POST":
         token = session.pop('_csrf_token', None)
+        print('csrf_protect')
         if not token or token != request.form.get('_csrf_token'):
-            abort(403)
+            print(request.form.get('_csrf_token'))
+            return render_template('error.html', error = 'CSRF ERROR')
 
 def generate_csrf_token():
+    print('generate_csrf_token')
     if '_csrf_token' not in session:
         session['_csrf_token'] = "some_random_string"
     return session['_csrf_token']
 
-app.jinja_env.globals['_csrf_token'] = generate_csrf_token 
+app.jinja_env.globals['csrf_token'] = generate_csrf_token 
 
 if __name__ == '__main__':
     app.run(debug = True)
