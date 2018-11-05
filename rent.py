@@ -6,13 +6,18 @@ import os
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET')
-host = "ec2-23-23-153-145.compute-1.amazonaws.com"
-database = "d1a72v67cv4eov"
-user = "oikvvbtlpbvuhg"
-password = "f6070d82cee69aa47d0efc3ee04db19c1541135122f355195913796a17cc9936"
+host = os.getenv('SERVER_HOST')
+database = os.getenv('DATABASE_NAME')
+user = os.getenv('USER_ROLE')
+password = os.getenv('PASSWORD')
 
-con = psycopg2.connect(host=host, database=database, user=user, password=password)
-cur = con.cursor()
+try:
+    con = psycopg2.connect(host=host, database=database, user=user, password=password)
+except Exception as e:
+    app.logger.warning("Unable to connect to the database")
+else:
+    cur = con.cursor()
+    app.logger.info("Connected!!")
 
 @app.route('/')
 def index():
@@ -22,27 +27,28 @@ def index():
         FROM public.film WHERE description iLIKE '%croc%' AND description iLIKE '%shark%'; ")
         croc_shark = cur.fetchall()
         results.append(croc_shark)
-        cur.execute("select custor.first_name, custor.last_name \
-        from (select first_name, last_name \
-            from public.customer as cust \
-            union\
-            select first_name, last_name \
-            from public.actor as act) custor \
-        where custor.first_name = (select first_name from actor where actor_id=8) \
-        ")
+        cur.execute("""select custor.first_name, custor.last_name
+        from (select first_name, last_name
+            from public.customer as cust
+            union
+            select first_name, last_name
+            from public.actor as act) custor 
+        where custor.first_name = (select first_name from actor where actor_id=8)
+        """)
         names = cur.fetchall()
         results.append(names)
-        cur.execute("select cat.name, count(film_cat.film_id) \
-        from public.film_category as film_cat \
-        inner join public.category as cat \
-        ON film_cat.category_id = cat.category_id \
-        inner join public.film as fil \
-        ON film_cat.film_id = fil.film_id \
-        group by cat.name having count(*) BETWEEN 55 AND 65 \
-        order by count(film_cat.film_id)")
+        cur.execute("""select cat.name, count(film_cat.film_id)
+        from public.film_category as film_cat 
+        inner join public.category as cat 
+        ON film_cat.category_id = cat.category_id 
+        inner join public.film as fil 
+        ON film_cat.film_id = fil.film_id 
+        group by cat.name having count(*) BETWEEN 55 AND 65 
+        order by count(film_cat.film_id)""")
         film_categories = cur.fetchall()
         results.append(film_categories)
         con.commit()
+        app.logger.warning("{} results found".format(len(results)))
         return render_template('index.html', results=results)
 
 @app.route('/add_film', methods = ['GET', 'POST'])
@@ -65,10 +71,10 @@ def add_film():
         value = cur.execute("select * from public.mpaa_rating(%s)", (rating))
         film_rating = cur.fetchall()
         
-        cur.execute("INSERT INTO public.film ( \
-        title, description ,release_year ,language_id, rental_duration, rental_rate, length,replacement_cost,rating) \
-        VALUES \
-        (%s, %s, %s, %s ,%s ,%s ,%s ,%s ,%s)", \
+        cur.execute("""INSERT INTO public.film ( 
+        title, description ,release_year ,language_id, rental_duration, rental_rate, length,replacement_cost,rating) 
+        VALUES 
+        (%s, %s, %s, %s ,%s ,%s ,%s ,%s ,%s)""",
         (film_title, film_description, release_year, film_language[0] ,rental_duration ,rental_rate ,film_length ,replacement_cost ,film_rating[0]))
         
         con.commit()
