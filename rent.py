@@ -6,10 +6,10 @@ import os
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET')
-host = os.getenv('SERVER_HOST')
-database = os.getenv('DATABASE_NAME')
-user = os.getenv('USER_ROLE')
-password = os.getenv('PASSWORD')
+host = "ec2-184-73-222-192.compute-1.amazonaws.com"
+database = "ddjmafhk5bn8vk"
+user = "jqzrlrezawzznt"
+password = "8c962a17e5dfe5f4712e28405265a0fa5c2ff9d2997a86eb44a8b5084b25c103"
 
 con = psycopg2.connect(host=host, database=database, user=user, password=password)
 cur = con.cursor()
